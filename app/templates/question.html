@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>질문 {{ question['id'] }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Arial', sans-serif;
+    }
+    .container {
+      max-width: 600px;
+      margin-top: 60px;
+    }
+    .choice-img {
+      width: 50px;
+      height: auto;
+      margin-right: 10px;
+    }
+    .choice-container {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    .choice-container:hover {
+      background-color: #e9ecef;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h3 class="mb-4">{{ question['title'] }}</h3>
+
+    <form method="POST">
+      <input type="hidden" name="api_url" value="{{ api_url }}">
+      <input type="hidden" name="user_id" value="{{ user_id }}">
+
+      {% if question['id'] in [3, 4] %}
+        {% for choice in question['choices'] %}
+          <div class="choice-container">
+            <input type="radio" id="choice{{ choice['id'] }}" name="choice_id" value="{{ choice['id'] }}" required>
+            <label for="choice{{ choice['id'] }}" class="ms-2 d-flex align-items-center">
+              <img src="{{ url_for('static', filename='images/' + choice['content'] + '.png') }}" alt="{{ choice['content'] }}" class="choice-img">
+              {{ choice['content'] }}
+            </label>
+          </div>
+        {% endfor %}
+      {% else %}
+        {% for choice in question['choices'] %}
+          <div class="choice-container">
+            <input type="radio" id="choice{{ choice['id'] }}" name="choice_id" value="{{ choice['id'] }}" required>
+            <label for="choice{{ choice['id'] }}" class="ms-2">
+              {{ choice['content'] }}
+            </label>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary w-100 mt-4">다음</button>
+    </form>
+  </div>
+</body>
+</html>

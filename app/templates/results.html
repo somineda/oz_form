@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>설문 결과</title>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2, h4 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 20px;
+            height: 300px;
+            margin-bottom: 20px;
+            background: #f0f2f5;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .bar {
+            width: 50px;
+            background: linear-gradient(to top, #4facfe, #00f2fe);
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            text-align: center;
+            color: #333;
+            font-weight: bold;
+        }
+        .bar span {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 13px;
+        }
+        .summary-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        .summary-table th, .summary-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            font-size: 14px;
+        }
+        .summary-table th {
+            background-color: #e0e0e0;
+        }
+        .summary-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .question-block {
+            margin-bottom: 80px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>설문 결과</h2>
+
+    {% for question, choices in stats.items() %}
+    <div class="question-block">
+        <h4>{{ question }}</h4>
+        <div class="chart-container">
+            {% set total = choices.values()|sum %}
+            {% set max_value = choices.values()|max %}
+            {% for choice, count in choices.items() %}
+                {% if total > 0 %}
+                    <div class="bar" style="height: {{ (count / max_value) * 250 }}px;">
+                        <span>{{ count }}명</span>
+                    </div>
+                {% else %}
+                    <div class="bar" style="height: 0px;">
+                        <span>0명</span>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>선택지</th>
+                    <th>응답자 수</th>
+                    <th>비율(%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for choice, count in choices.items() %}
+                <tr>
+                    <td>{{ choice }}</td>
+                    <td>{{ count }}명</td>
+                    <td>{{ (count / total * 100)|round(1) }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+
+</div>
+
+</body>
+</html>
